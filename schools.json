@@ -1,0 +1,22 @@
+{
+  "schools": [
+    {
+      "name": "Evergreen Academy",
+      "description": "Progressive K-8 school focusing on environmental stewardship and project-based learning.",
+      "logo": "https://via.placeholder.com/300x200",
+      "website": "#"
+    },
+    {
+      "name": "River Valley Montessori",
+      "description": "Authentic Montessori education serving children from 18 months through 6th grade.",
+      "logo": "https://via.placeholder.com/300x200",
+      "website": "#"
+    },
+    {
+      "name": "Cascade STEM Prep",
+      "description": "High school specializing in science, technology, and mathematics with dual enrollment options.",
+      "logo": "https://via.placeholder.com/300x200",
+      "website": "#"
+    }
+  ]
+}
