@@ -14,6 +14,7 @@ def generate_school_cards(schools):
                 <a href="{school['Website']}" class="text-decoration-none">{school['Name']}</a>
               </h5>
               <p class="card-text">{school['Description']}</p>
+              <p class="card-text"><small class="text-muted">{school['Address']}</small></p>
               <a href="{school['Website']}" class="btn btn-primary">Visit Website</a>
             </div>
           </div>
