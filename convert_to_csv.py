@@ -17,8 +17,8 @@ with open('schools.csv', 'w', newline='') as f:
         writer.writerow([
             school['name'],
             school['description'],
+            school['website'],
             school['logo'],
-            school['website']
         ])
 
 print("Conversion complete. CSV file created successfully.")
