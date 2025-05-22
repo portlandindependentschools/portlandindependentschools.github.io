@@ -23,30 +23,37 @@ def generate_school_cards(schools):
     return '\n'.join(cards)
 
 def build_site():
-    # Fetch CSV data from URL
-    url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS5DPiVrMEHIFMWWZLUcmy4plA_RQ0gIJmG98PHUJ1LEdzobsfYoaf1io5GC2wP64im0qGG6AS8IBJl/pub?gid=1797278409&single=true&output=csv'
-    response = requests.get(url)
-    response.raise_for_status()  # Check for HTTP errors
-    
-    # Parse CSV data
-    csv_reader = csv.DictReader(response.text.splitlines())
-    schools = list(csv_reader)
-    
-    # Load template
-    with open('template.html') as f:
-        template = f.read()
-    
-    # Generate school cards
-    schools_html = generate_school_cards(schools)
-    
-    # Insert into template
-    output = template.replace('<!--SCHOOLS_GO_HERE-->', schools_html)
-    
-    # Write output
-    with open('index.html', 'w') as f:
-        f.write(output)
-    
-    print("Site built successfully from Google Sheets data!")
+    try:
+        # Fetch CSV data from URL
+        url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS5DPiVrMEHIFMWWZLUcmy4plA_RQ0gIJmG98PHUJ1LEdzobsfYoaf1io5GC2wP64im0qGG6AS8IBJl/pub?gid=1797278409&single=true&output=csv'
+        response = requests.get(url)
+        response.raise_for_status()  # Check for HTTP errors
+
+        # Parse CSV data
+        csv_reader = csv.DictReader(response.text.splitlines())
+        schools = list(csv_reader)
+
+        if not schools:
+            print("No school data found!")
+            return
+
+        # Load template
+        with open('template.html') as f:
+            template = f.read()
+
+        # Generate school cards
+        schools_html = generate_school_cards(schools)
+
+        # Insert into template
+        output = template.replace('<!--SCHOOLS_GO_HERE-->', schools_html)
+
+        # Write output
+        with open('index.html', 'w') as f:
+            f.write(output)
+
+        print("Site built successfully from Google Sheets data!")
+    except Exception as e:
+        print(f"Error building site: {e}")
 
 if __name__ == '__main__':
     build_site()
