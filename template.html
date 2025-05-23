@@ -6,7 +6,11 @@
   <meta name="description" content="Directory of independent schools in the Portland metro area participating in the 2025 school fair">
   <title>Portland Independent Schools</title>
   <link href="bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    #map { height: 600px; margin: 2rem 0; }
+    .leaflet-container { background: #f8f9fa; }
+
     .school-logo {
       object-fit: contain;
       height: 200px;
@@ -42,7 +46,10 @@
         <!--SCHOOLS_GO_HERE-->
       </div>
     </main>
-
+    <div class="container mt-4">
+      <h3>School Locations</h3>
+      <div id="map"></div>
+    </div>
     <footer class="container mt-4">
       <div class="row">
         <div class="col">
