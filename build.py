@@ -3,11 +3,17 @@ import requests
 import os
 import re
 
-def drive_thumbnail_url(url):
-    if 'drive.google.com' not in url:
-        return url
-    match = re.search(r'[=/]([\w-]+)(?:/|$)', url)
-    return f"https://drive.google.com/thumbnail?id={match.group(1)}&sz=w800" if match else url
+def sanitize_filename(name):
+    sanitized = re.sub(r'[^a-zA-Z0-9]+', '-', name).lower()
+    sanitized = sanitized.strip('-')
+    return sanitized
+
+def get_local_logo_path(school):
+    logo_url = school['Logo']
+    if 'drive.google.com' not in logo_url:
+        return logo_url
+    sanitized = sanitize_filename(school['Name'])
+    return f"img/{sanitized}.jpg"
 
 def generate_school_cards(schools):
     cards = []
@@ -15,7 +21,7 @@ def generate_school_cards(schools):
         card = f'''
         <div class="col-12 col-md-4">
           <div class="card h-100">
-            <img src="{drive_thumbnail_url(school['Logo'])}" class="card-img-top school-logo" alt="{school['Name']} Logo">
+            <img src="{get_local_logo_path(school)}" class="card-img-top school-logo" alt="{school['Name']} Logo">
             <div class="card-body">
               <h5 class="card-title">
                 <a href="{school['Website']}" class="text-decoration-none">{school['Name']}</a>
