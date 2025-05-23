@@ -66,6 +66,40 @@
   </div>
 
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([45.5231, -122.6765], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Add markers from school data
+    const schools = [
+      {% for school in schools %}
+      {
+        name: "{{ school['Name']|escapejs }}",
+        website: "{{ school['Website']|escapejs }}",
+        address: "{{ school['Address']|escapejs }}",
+        coords: [{{ school['Coord']|escapejs }}]
+      },
+      {% endfor %}
+    ];
+
+    const bounds = [];
+    schools.forEach(school => {
+      if(school.coords && school.coords.length === 2) {
+        const marker = L.marker(school.coords).addTo(map);
+        marker.bindPopup(`
+          <strong><a href="${school.website}">${school.name}</a></strong><br>
+          ${school.address}
+        `);
+        bounds.push(school.coords);
+      }
+    });
+    
+    if(bounds.length > 0) {
+      map.fitBounds(bounds);
+    }
+  </script>
   <script src="bootstrap.bundle.min.js"></script>
 </body>
 </html>

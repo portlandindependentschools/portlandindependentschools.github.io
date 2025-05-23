@@ -2,6 +2,7 @@ import csv
 import requests
 import os
 import re
+import json
 
 def sanitize_filename(name):
     sanitized = re.sub(r'[^a-zA-Z0-9]+', '-', name).lower()
@@ -49,6 +50,17 @@ def build_site():
         if not schools:
             print("No school data found!")
             return
+            
+        # Prepare schools data for map
+        schools_data = []
+        for school in schools:
+            if school.get('Coord'):
+                schools_data.append({
+                    'Name': school['Name'],
+                    'Website': school['Website'],
+                    'Address': school['Address'],
+                    'Coord': school['Coord']
+                })
 
         # Load template
         with open('template.html') as f:
@@ -59,6 +71,10 @@ def build_site():
 
         # Insert into template
         output = template.replace('<!--SCHOOLS_GO_HERE-->', schools_html)
+        
+        # Replace map data placeholders
+        output = output.replace('{% for school in schools %}', '')
+        output = output.replace('const schools = [', f'const schools = {json.dumps(schools_data)};')
 
         # Write output
         with open('index.html', 'w') as f:
