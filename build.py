@@ -59,7 +59,7 @@ def build_site():
                     'Name': school['Name'],
                     'Website': school['Website'],
                     'Address': school['Address'],
-                    'Coord': school['Coord']
+                    'Coord': school['Coord']  # Keep the original key name to match JS
                 })
 
         # Load template

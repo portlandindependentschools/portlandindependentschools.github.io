@@ -6,10 +6,17 @@
   <meta name="description" content="Directory of independent schools in the Portland metro area participating in the 2025 school fair">
   <title>Portland Independent Schools</title>
   <link href="bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.css" rel="stylesheet">
   <style>
     #map { height: 600px; margin: 2rem 0; }
     .leaflet-container { background: #f8f9fa; }
+    .school-marker {
+      width: 20px;
+      height: 20px;
+      background: #007bff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
     .school-logo {
       object-fit: contain;
