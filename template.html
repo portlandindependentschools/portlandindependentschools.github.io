@@ -73,16 +73,7 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     // Add markers from school data
-    const schools = [
-      {% for school in schools %}
-      {
-        name: "{{ school['Name']|escapejs }}",
-        website: "{{ school['Website']|escapejs }}",
-        address: "{{ school['Address']|escapejs }}",
-        coords: [{{ school['Coord']|escapejs }}]
-      },
-      {% endfor %}
-    ];
+    const schools = [];
 
     const bounds = [];
     schools.forEach(school => {

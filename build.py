@@ -73,8 +73,7 @@ def build_site():
         output = template.replace('<!--SCHOOLS_GO_HERE-->', schools_html)
         
         # Replace map data placeholders
-        output = output.replace('{% for school in schools %}', '')
-        output = output.replace('const schools = [', f'const schools = {json.dumps(schools_data)};')
+        output = output.replace('const schools = [];', f'const schools = {json.dumps(schools_data)};')
 
         # Write output
         with open('index.html', 'w') as f:
