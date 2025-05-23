@@ -1,6 +1,13 @@
 import csv
 import requests
 import os
+import re
+
+def drive_thumbnail_url(url):
+    if 'drive.google.com' not in url:
+        return url
+    match = re.search(r'[=/]([\w-]+)(?:/|$)', url)
+    return f"https://drive.google.com/thumbnail?id={match.group(1)}&sz=w800" if match else url
 
 def generate_school_cards(schools):
     cards = []
@@ -8,7 +15,7 @@ def generate_school_cards(schools):
         card = f'''
         <div class="col-12 col-md-4">
           <div class="card h-100">
-            <img src="{school['Logo']}" class="card-img-top school-logo" alt="{school['Name']} Logo">
+            <img src="{drive_thumbnail_url(school['Logo'])}" class="card-img-top school-logo" alt="{school['Name']} Logo">
             <div class="card-body">
               <h5 class="card-title">
                 <a href="{school['Website']}" class="text-decoration-none">{school['Name']}</a>
