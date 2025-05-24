@@ -74,7 +74,8 @@ def build_site():
                         "properties": {
                             "name": school['Name'],
                             "website": school['Website'],
-                            "address": school['Address']
+                            "address": school['Address'],
+                            "description": school['Description']
                         }
                     })
                 except (ValueError, KeyError):

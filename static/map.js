@@ -28,11 +28,39 @@ var cwmap = (() => {
       type: 'circle',
       source: 'schools',
       paint: {
-        'circle-radius': 6,
+        'circle-radius': 8,
         'circle-color': '#007bff',
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#fff'
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
       }
+    });
+    
+    // Add interactivity
+    map.on('click', 'schools', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['schools'] });
+        if (!features.length) return;
+        
+        const feature = features[0];
+        const coords = feature.geometry.coordinates;
+
+        new maplibregl.Popup()
+            .setLngLat(coords)
+            .setHTML(`
+                <h3><a href="${feature.properties.website}" target="_blank">${feature.properties.name}</a></h3>
+                <p>${feature.properties.address}</p>
+                <p>${feature.properties.description}</p>
+            `)
+            .addTo(map);
+    });
+
+    // Change cursor style on hover
+    map.on('mouseenter', 'schools', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'schools', () => {
+        map.getCanvas().style.cursor = '';
     });
   });
 })();
