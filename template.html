@@ -72,71 +72,14 @@
     </footer>
   </div>
 
+  <div id="map-container"></div>
 
   <script src="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.js"></script>
-  <script src="https://unpkg.com/pmtiles@2.4.0/dist/pmtiles.js"></script>
+  <script src="https://unpkg.com/pmtiles@4.3.0/dist/pmtiles.js"></script>
 
-  <script>
-    // Initialize Protomaps
-    const protocol = new pmtiles.Protocol();
-    maplibregl.addProtocol('pmtiles', protocol.tile);
-
-    // Create map with Protomaps base layer
-    const map = new maplibregl.Map({
-      container: 'map',
-      style: {
-        version: 8,
-        sources: {
-          'protomaps': {
-            type: 'vector',
-            url: 'pmtiles://https://build.protomaps.com/20231028.pmtiles',
-            attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-          }
-        },
-        layers: [{
-          id: 'background',
-          type: 'background',
-          paint: {'background-color': '#f8f9fa'}
-        }, {
-          id: 'roads',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          type: 'line',
-          paint: {
-            'line-color': '#4a4a4a',
-            'line-width': 1
-          }
-        }]
-      },
-      center: [-122.6765, 45.5231],
-      zoom: 12
-    });
-
-    // Add markers and popups
-    const schools = [];
-    
-    const bounds = new maplibregl.LngLatBounds();
-    schools.forEach(school => {
-      if(school.Coord) {
-        const [lat, lng] = school.Coord.split(',').map(Number);
-        const el = document.createElement('div');
-        el.className = 'school-marker';
-        
-        new maplibregl.Marker(el)
-          .setLngLat([lng, lat])
-          .setPopup(new maplibregl.Popup().setHTML(
-            `<strong><a href="${school.Website}">${school.Name}</a></strong><br>${school.Address}`
-          ))
-          .addTo(map);
-
-        bounds.extend([lng, lat]);
-      }
-    });
-
-    if(schools.length > 0) {
-      map.fitBounds(bounds, {padding: 50});
-    }
-  </script>
+  <script src="static/maplibre/maplibre-gl.js"></script>
+  <script src="static/pmtiles.js"></script>
+  <script src="static/map.js"></script>
   <script src="bootstrap.bundle.min.js"></script>
 </body>
 </html>
