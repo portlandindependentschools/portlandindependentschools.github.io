@@ -58,27 +58,26 @@ def build_site():
         }
 
         for school in schools:
-            if school.get('Coord'):
-                try:
-                    # Parse coordinates - assuming "lat, lon" format in Coord field
-                    lat_str, lon_str = school['Coord'].split(',')
-                    coords = [float(lon_str.strip()), float(lat_str.strip())]  # GeoJSON uses [lon, lat]
-                    
-                    schools_data['features'].append({
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": coords
-                        },
-                        "properties": {
-                            "name": school['Name'],
-                            "website": school['Website'],
-                            "address": school['Address'],
-                            "description": school['Description']
-                        }
-                    })
-                except (ValueError, KeyError):
-                    print(f"Skipping invalid coordinates for {school.get('Name', 'unnamed school')}")
+            try:
+                # Parse coordinates - assuming "lat, lon" format in Coord field
+                lat_str, lon_str = school['Coord'].split(',')
+                coords = [float(lon_str.strip()), float(lat_str.strip())]  # GeoJSON uses [lon, lat]
+                
+                schools_data['features'].append({
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": coords
+                    },
+                    "properties": {
+                        "name": school['Name'],
+                        "website": school['Website'],
+                        "address": school['Address'],
+                        "description": school['Description']
+                    }
+                })
+            except (ValueError, KeyError):
+                print(f"Skipping invalid coordinates for {school.get('Name', 'unnamed school')}")
 
         # Load template
         with open('template.html') as f:
