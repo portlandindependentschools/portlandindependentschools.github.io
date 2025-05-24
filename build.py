@@ -77,7 +77,7 @@ def build_site():
                     }
                 })
             except (ValueError, KeyError):
-                print(f"Skipping invalid coordinates for {school.get('Name', 'unnamed school')}")
+                print(f"Skipping invalid coordinates for {school.get('Name', 'unnamed school')}: ", school.get('Coord'))
 
         # Load template
         with open('template.html') as f:
