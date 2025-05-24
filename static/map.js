@@ -11,7 +11,7 @@ var cwmap = (() => {
     container: "map",
     style: "https://api.protomaps.com/styles/v5/light/en.json?key=dce60796ad799401",
     center: [-122.6765, 45.5231], // Default Portland coordinates
-    zoom: 10
+    zoom: 9
   });
 
   // Add school markers after map loads

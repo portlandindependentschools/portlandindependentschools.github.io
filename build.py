@@ -61,6 +61,7 @@ def build_site():
             if school.get('Coord'):
                 try:
                     # Parse coordinates - assuming "lat, lon" format in Coord field
+                    print(school['Coord'], school['Name']) 
                     lat_str, lon_str = school['Coord'].split(',')
                     coords = [float(lon_str.strip()), float(lat_str.strip())]  # GeoJSON uses [lon, lat]
                     
