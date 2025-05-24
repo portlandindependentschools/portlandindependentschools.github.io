@@ -19,10 +19,7 @@ var cwmap = (() => {
     // Add your school data source
     map.addSource('schools', {
       type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: schoolsData // Replace with your actual school data array
-      }
+      data: schoolsData  // Now using the properly formatted GeoJSON
     });
 
     // Add marker layer

@@ -52,15 +52,32 @@ def build_site():
             return
             
         # Prepare schools data for map
-        schools_data = []
+        schools_data = {
+            "type": "FeatureCollection",
+            "features": []
+        }
+
         for school in schools:
             if school.get('Coord'):
-                schools_data.append({
-                    'Name': school['Name'],
-                    'Website': school['Website'],
-                    'Address': school['Address'],
-                    'Coord': school['Coord']  # Keep the original key name to match JS
-                })
+                try:
+                    # Parse coordinates - assuming "lat, lon" format in Coord field
+                    lat_str, lon_str = school['Coord'].split(',')
+                    coords = [float(lon_str.strip()), float(lat_str.strip())]  # GeoJSON uses [lon, lat]
+                    
+                    schools_data['features'].append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": coords
+                        },
+                        "properties": {
+                            "name": school['Name'],
+                            "website": school['Website'],
+                            "address": school['Address']
+                        }
+                    })
+                except (ValueError, KeyError):
+                    print(f"Skipping invalid coordinates for {school.get('Name', 'unnamed school')}")
 
         # Load template
         with open('template.html') as f:
@@ -73,7 +90,7 @@ def build_site():
         output = template.replace('<!--SCHOOLS_GO_HERE-->', schools_html)
         
         # Replace map data placeholders
-        output = output.replace('const schools = [];', f'const schools = {json.dumps(schools_data)};')
+        output = output.replace('//SCHOOLS_DATA_PLACEHOLDER', f'const schoolsData = {json.dumps(schools_data)};')
 
         # Write output
         with open('index.html', 'w') as f:
