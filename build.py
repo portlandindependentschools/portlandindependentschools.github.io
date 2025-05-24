@@ -3,6 +3,7 @@ import requests
 import os
 import re
 import json
+from datetime import datetime
 
 def sanitize_filename(name):
     sanitized = re.sub(r'[^a-zA-Z0-9]+', '-', name).lower()
@@ -20,21 +21,43 @@ def generate_school_cards(schools):
     cards = []
     for school in schools:
         card = f'''
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-4" itemscope itemtype="https://schema.org/EducationalOrganization">
           <div class="card h-100">
-            <img src="{get_local_logo_path(school)}" class="card-img-top school-logo" alt="{school['Name']} Logo">
+            <img src="{get_local_logo_path(school)}" 
+                 class="card-img-top school-logo" 
+                 alt="{school['Name']} Logo"
+                 itemprop="image">
             <div class="card-body">
-              <h5 class="card-title">
-                <a href="{school['Website']}" class="text-decoration-none">{school['Name']}</a>
+              <h5 class="card-title" itemprop="name">
+                <a href="{school['Website']}" 
+                   class="text-decoration-none" 
+                   itemprop="url">{school['Name']}</a>
               </h5>
-              <p class="card-text">{school['Description']}</p>
-              <p class="card-text"><small class="text-muted">{school['Address']}</small></p>
+              <p class="card-text" itemprop="description">{school['Description']}</p>
+              <p class="card-text" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                <small class="text-muted">
+                  <span itemprop="streetAddress">{school['Address']}</span>,<br>
+                  <span itemprop="addressLocality">Portland</span>, 
+                  <span itemprop="addressRegion">OR</span>
+                </small>
+              </p>
               <a href="{school['Website']}" class="btn btn-primary">Visit Website</a>
             </div>
           </div>
         </div>'''
         cards.append(card)
     return '\n'.join(cards)
+
+def generate_sitemap(lastmod_date):
+    return f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.portlandindependentschools.org/</loc>
+    <lastmod>{lastmod_date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>'''
 
 def build_site():
     try:
@@ -46,6 +69,15 @@ def build_site():
         # Parse CSV data
         csv_reader = csv.DictReader(response.text.splitlines())
         schools = list(csv_reader)
+
+        # Get current date in sitemap format
+        lastmod_date = datetime.now().strftime('%Y-%m-%d')
+        
+        # Generate and write sitemap
+        with open('sitemap.xml', 'w') as f:
+            f.write(generate_sitemap(lastmod_date))
+            
+        print("Generated sitemap.xml with lastmod:", lastmod_date)
 
         if not schools:
             print("No school data found!")
