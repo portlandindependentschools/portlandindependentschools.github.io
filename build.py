@@ -36,9 +36,7 @@ def generate_school_cards(schools):
               <p class="card-text" itemprop="description">{school['Description']}</p>
               <p class="card-text" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
                 <small class="text-muted">
-                  <span itemprop="streetAddress">{school['Address']}</span>,<br>
-                  <span itemprop="addressLocality">Portland</span>, 
-                  <span itemprop="addressRegion">OR</span>
+                  <span itemprop="streetAddress">{school['Address']}</span>
                 </small>
               </p>
               <a href="{school['Website']}" class="btn btn-primary">Visit Website</a>
