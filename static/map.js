@@ -32,20 +32,27 @@ var cwmap = (() => {
         'circle-color': '#007bff',
         'circle-stroke-width': 2,
         'circle-stroke-color': '#ffffff',
-        'circle-opacity': 0.8
+        'circle-opacity': 0.8,
+        'circle-pitch-alignment': 'viewport',  // Better for click detection
+        'circle-translate-anchor': 'map'       // Ensure proper positioning
       }
     });
     
     // Add interactivity
     map.on('click', 'schools', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: ['schools'] });
+        // Add radius and check both viewport and map-aligned features
+        const features = map.queryRenderedFeatures(e.point, {
+            layers: ['schools'],
+            radius: 10,  // 10 pixel detection radius
+            includeImages: true
+        });
+        
         if (!features.length) return;
         
         const feature = features[0];
-        const coords = feature.geometry.coordinates;
-
+        // Use coordinates from the actual click event instead of feature geometry
         new maplibregl.Popup()
-            .setLngLat(coords)
+            .setLngLat(e.lngLat)  // Use click coordinates instead of feature coordinates
             .setHTML(`
                 <h3><a href="${feature.properties.website}" target="_blank">${feature.properties.name}</a></h3>
                 <p>${feature.properties.address}</p>
