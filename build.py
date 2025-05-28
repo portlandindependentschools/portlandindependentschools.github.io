@@ -33,9 +33,6 @@ in Portland, OR and surrounding areas including Vancouver, WA.
 - **Website**: {school.get('Website', '')}
 - **Description**: {school.get('Description', '')}
 - **Grade Levels**: {school.get('Grade Levels', '')}
-- **Admissions Contact**: {school.get('Admissions Contact', '')}
-- **Phone**: {school.get('Phone', '')}
-- **Email**: {school.get('Email', '')}
 
 """
     return md
