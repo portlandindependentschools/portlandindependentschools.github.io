@@ -10,6 +10,36 @@ def sanitize_filename(name):
     sanitized = sanitized.strip('-')
     return sanitized
 
+def generate_llms_markdown(schools):
+    md = """# Portland Independent Schools Directory
+    
+## About
+2025 Portland Independent & Private School Fair participants directory. 
+Find contact information, locations, and admissions details for K-12 schools 
+in Portland, OR and surrounding areas including Vancouver, WA.
+    
+## Participating Schools\n\n"""
+    
+    for school in schools:
+        try:
+            lat, lon = school['Coord'].split(',')
+            coords = f"{lat.strip()}, {lon.strip()}"
+        except (ValueError, KeyError):
+            coords = "Coordinates not available"
+        
+        md += f"""## {school['Name']}
+- **Address**: {school.get('Address', '')}
+- **Coordinates**: {coords}
+- **Website**: {school.get('Website', '')}
+- **Description**: {school.get('Description', '')}
+- **Grade Levels**: {school.get('Grade Levels', '')}
+- **Admissions Contact**: {school.get('Admissions Contact', '')}
+- **Phone**: {school.get('Phone', '')}
+- **Email**: {school.get('Email', '')}
+
+"""
+    return md
+
 def get_local_logo_path(school):
     logo_url = school['Logo']
     if 'drive.google.com' not in logo_url:
@@ -126,6 +156,10 @@ def build_site():
         with open('index.html', 'w') as f:
             f.write(output)
 
+        # Generate and write LLM-friendly markdown
+        with open('llms.txt', 'w') as f:
+            f.write(generate_llms_markdown(schools))
+            
         print("Site built successfully from Google Sheets data!")
     except Exception as e:
         print(f"Error building site: {e}")
