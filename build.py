@@ -91,15 +91,15 @@ def build_site():
         response = requests.get(url)
         response.raise_for_status()  # Check for HTTP errors
 
-        # Parse CSV data
-        csv_reader = csv.DictReader(response.text.splitlines())
+        # Parse CSV data with UTF-8 encoding
+        csv_reader = csv.DictReader(response.content.decode('utf-8').splitlines())
         schools = list(csv_reader)
 
         # Get current date in sitemap format
         lastmod_date = datetime.now().strftime('%Y-%m-%d')
         
         # Generate and write sitemap
-        with open('sitemap.xml', 'w') as f:
+        with open('sitemap.xml', 'w', encoding='utf-8') as f:
             f.write(generate_sitemap(lastmod_date))
             
         print("Generated sitemap.xml with lastmod:", lastmod_date)
@@ -150,11 +150,11 @@ def build_site():
         output = output.replace('//SCHOOLS_DATA_PLACEHOLDER', f'const schoolsData = {json.dumps(schools_data)};')
 
         # Write output
-        with open('index.html', 'w') as f:
+        with open('index.html', 'w', encoding='utf-8') as f:
             f.write(output)
 
         # Generate and write LLM-friendly markdown
-        with open('llms.txt', 'w') as f:
+        with open('llms.txt', 'w', encoding='utf-8') as f:
             f.write(generate_llms_markdown(schools))
             
         print("Site built successfully from Google Sheets data!")
