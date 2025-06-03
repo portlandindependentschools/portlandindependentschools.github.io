@@ -29,6 +29,7 @@ in Portland, OR and surrounding areas including Vancouver, WA.
         
         md += f"""## {school['Name']}
 - **Address**: {school.get('Address', '')}
+{f"- **Secondary Campus**: {school.get('Address2', '')}" if school.get('Address2') else ''}
 - **Coordinates**: {coords}
 - **Website**: {school.get('Website', '')}
 - **Description**: {school.get('Description', '')}
@@ -47,6 +48,11 @@ def get_local_logo_path(school):
 def generate_school_cards(schools):
     cards = []
     for school in schools:
+        # Add Address2 handling
+        address_html = f'<span itemprop="streetAddress">{school.get("Address", "")}</span>'
+        if school.get('Address2'):
+            address_html += f'<br><span itemprop="streetAddress">{school["Address2"]}</span>'
+            
         card = f'''
         <div class="col-12 col-md-4" itemscope itemtype="https://schema.org/EducationalOrganization">
           <div class="card h-100">
@@ -63,7 +69,7 @@ def generate_school_cards(schools):
               <p class="card-text" itemprop="description">{school['Description']}</p>
               <p class="card-text" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
                 <small class="text-muted">
-                  <span itemprop="streetAddress">{school['Address']}</span>
+                  {address_html}
                 </small>
               </p>
               <a href="{school['Website']}" class="btn btn-primary">Visit Website</a>
@@ -129,7 +135,8 @@ def build_site():
                     "properties": {
                         "name": school['Name'],
                         "website": school['Website'],
-                        "address": school['Address'],
+                        # Combine addresses
+                        "address": " | ".join(filter(None, [school.get('Address'), school.get('Address2')])),
                         "description": school['Description']
                     }
                 })
