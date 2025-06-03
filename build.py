@@ -100,7 +100,6 @@ def build_site():
         # Parse CSV data with UTF-8 encoding
         csv_reader = csv.DictReader(response.content.decode('utf-8').splitlines())
         schools = list(csv_reader)
-        print(schools)
 
         # Get current date in sitemap format
         lastmod_date = datetime.now().strftime('%Y-%m-%d')
