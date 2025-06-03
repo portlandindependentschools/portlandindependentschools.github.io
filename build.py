@@ -29,7 +29,7 @@ in Portland, OR and surrounding areas including Vancouver, WA.
         
         md += f"""## {school['Name']}
 - **Address**: {school.get('Address', '')}
-{f"- **Secondary Campus**: {school.get('Address2', '')}" if school.get('Address2') else ''}
+{f"- **Secondary Campus**: {school.get('Address 2', '')}" if school.get('Address 2') else ''}
 - **Coordinates**: {coords}
 - **Website**: {school.get('Website', '')}
 - **Description**: {school.get('Description', '')}
@@ -48,10 +48,10 @@ def get_local_logo_path(school):
 def generate_school_cards(schools):
     cards = []
     for school in schools:
-        # Add Address2 handling
+        # Add Address 2 handling
         address_html = f'<span itemprop="streetAddress">{school.get("Address", "")}</span>'
-        if school.get('Address2'):
-            address_html += f'<br><span itemprop="streetAddress">{school["Address2"]}</span>'
+        if school.get('Address 2'):
+            address_html += f'<br><span itemprop="streetAddress">{school["Address 2"]}</span>'
             
         card = f'''
         <div class="col-12 col-md-4" itemscope itemtype="https://schema.org/EducationalOrganization">
@@ -100,6 +100,7 @@ def build_site():
         # Parse CSV data with UTF-8 encoding
         csv_reader = csv.DictReader(response.content.decode('utf-8').splitlines())
         schools = list(csv_reader)
+        print(schools)
 
         # Get current date in sitemap format
         lastmod_date = datetime.now().strftime('%Y-%m-%d')
@@ -136,7 +137,7 @@ def build_site():
                         "name": school['Name'],
                         "website": school['Website'],
                         # Combine addresses
-                        "address": " | ".join(filter(None, [school.get('Address'), school.get('Address2')])),
+                        "address": " | ".join(filter(None, [school.get('Address'), school.get('Address 2')])),
                         "description": school['Description']
                     }
                 })
