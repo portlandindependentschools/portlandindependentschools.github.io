@@ -122,8 +122,8 @@ def build_site():
         }
 
         for school in schools:
+            # Process primary coordinate
             try:
-                # Parse coordinates - assuming "lat, lon" format in Coord field
                 lat_str, lon_str = school['Coord'].split(',')
                 coords = [float(lon_str.strip()), float(lat_str.strip())]  # GeoJSON uses [lon, lat]
                 
@@ -136,13 +136,36 @@ def build_site():
                     "properties": {
                         "name": school['Name'],
                         "website": school['Website'],
-                        # Combine addresses
-                        "address": " | ".join(filter(None, [school.get('Address'), school.get('Address 2')])),
-                        "description": school['Description']
+                        "address": school.get('Address', ''),
+                        "description": school['Description'],
+                        "campus": "Primary"
                     }
                 })
-            except (ValueError, KeyError):
-                print(f"Skipping invalid coordinates for {school.get('Name', 'unnamed school')}: ", school.get('Coord'))
+            except (ValueError, KeyError) as e:
+                print(f"Skipping invalid primary coordinates for {school.get('Name', 'unnamed school')}: {school.get('Coord', 'missing')}")
+
+            # Process secondary coordinate if present
+            if school.get('Coord 2'):
+                try:
+                    lat_str2, lon_str2 = school['Coord 2'].split(',')
+                    coords2 = [float(lon_str2.strip()), float(lat_str2.strip())]
+                    
+                    schools_data['features'].append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": coords2
+                        },
+                        "properties": {
+                            "name": school['Name'],
+                            "website": school['Website'],
+                            "address": school.get('Address 2', ''),
+                            "description": school['Description'],
+                            "campus": "Secondary"
+                        }
+                    })
+                except (ValueError, KeyError) as e:
+                    print(f"Skipping invalid secondary coordinates for {school.get('Name', 'unnamed school')}: {school.get('Coord 2', 'missing')}")
 
         # Load template
         with open('template.html') as f:
