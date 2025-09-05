@@ -8,3 +8,19 @@ are particpants in the annual Portland Independent & Private School Fair.
 The data for this website is maintained in [this Google Sheet](https://docs.google.com/spreadsheets/d/1TihrGDKgheu-lJ5uKJWJtUyQTWsBfT2hv36xmsMIbNQ/edit?gid=1797278409#gid=1797278409)
 
 Do you represent a school? [Submit updates using this form](https://forms.gle/uUBHcQ7xdr2nrxra8)
+
+# Developer Notes
+
+Build
+
+```
+python build.py
+```
+
+Run
+
+```
+python -m http.server
+```
+
+Visit http://localhost:8000
