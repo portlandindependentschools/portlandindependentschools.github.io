@@ -3,7 +3,10 @@ import requests
 import os
 import re
 import json
-from datetime import datetime
+from datetime import datetime, timezone
+
+# Date the site was first published (schema.org datePublished)
+SITE_PUBLISHED_ISO = '2024-09-01T00:00:00-07:00'
 
 def sanitize_filename(name):
     sanitized = re.sub(r'[^a-zA-Z0-9]+', '-', name).lower()
@@ -102,7 +105,10 @@ def build_site():
         schools = list(csv_reader)
 
         # Get current date in sitemap format
-        lastmod_date = datetime.now().strftime('%Y-%m-%d')
+        now = datetime.now(timezone.utc).astimezone()
+        lastmod_date = now.strftime('%Y-%m-%d')
+        modified_iso = now.replace(microsecond=0).isoformat()
+        modified_human = now.strftime('%B %-d, %Y')
         
         # Generate and write sitemap
         with open('sitemap.xml', 'w', encoding='utf-8') as f:
@@ -178,6 +184,11 @@ def build_site():
         
         # Replace map data placeholders
         output = output.replace('//SCHOOLS_DATA_PLACEHOLDER', f'const schoolsData = {json.dumps(schools_data)};')
+
+        # Replace published/modified date placeholders
+        output = output.replace('<!--PUBLISHED_ISO-->', SITE_PUBLISHED_ISO)
+        output = output.replace('<!--MODIFIED_ISO-->', modified_iso)
+        output = output.replace('<!--MODIFIED_HUMAN-->', modified_human)
 
         # Write output
         with open('index.html', 'w', encoding='utf-8') as f:
