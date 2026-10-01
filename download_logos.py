@@ -9,6 +9,18 @@ def sanitize_filename(name):
     sanitized = sanitized.strip('-')
     return sanitized
 
+def is_published(school):
+    return (school.get('Publish') or '').strip().lower() == 'yes'
+
+def extract_drive_file_id(url):
+    """Extract the file ID from Google Drive URLs such as:
+    https://drive.google.com/open?id=<id>
+    https://drive.google.com/file/d/<id>/view?usp=sharing
+    https://drive.google.com/uc?id=<id>&export=download
+    """
+    match = re.search(r'/d/([\w-]+)', url) or re.search(r'[?&]id=([\w-]+)', url)
+    return match.group(1) if match else None
+
 def download_logos():
     # Fetch CSV data from URL
     url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS5DPiVrMEHIFMWWZLUcmy4plA_RQ0gIJmG98PHUJ1LEdzobsfYoaf1io5GC2wP64im0qGG6AS8IBJl/pub?gid=1797278409&single=true&output=csv'
@@ -16,7 +28,7 @@ def download_logos():
     response.raise_for_status()
 
     csv_reader = csv.DictReader(response.text.splitlines())
-    schools = list(csv_reader)
+    schools = [s for s in csv_reader if is_published(s)]
 
     os.makedirs('img', exist_ok=True)
 
@@ -26,11 +38,10 @@ def download_logos():
             continue
 
         # Extract file ID from URL
-        match = re.search(r'[=/]([\w-]+)(?:/|$)', logo_url)
-        if not match:
+        file_id = extract_drive_file_id(logo_url)
+        if not file_id:
             print(f"Skipping invalid Google Drive URL: {logo_url}")
             continue
-        file_id = match.group(1)
         thumbnail_url = f"https://drive.google.com/thumbnail?id={file_id}&sz=w800"
 
         # Sanitize school name for filename
