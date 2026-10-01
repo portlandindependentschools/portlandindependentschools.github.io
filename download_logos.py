@@ -24,7 +24,7 @@ def extract_drive_file_id(url):
 def download_logos():
     # Fetch CSV data from URL
     url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS5DPiVrMEHIFMWWZLUcmy4plA_RQ0gIJmG98PHUJ1LEdzobsfYoaf1io5GC2wP64im0qGG6AS8IBJl/pub?gid=1797278409&single=true&output=csv'
-    response = requests.get(url)
+    response = requests.get(url, timeout=30)
     response.raise_for_status()
 
     csv_reader = csv.DictReader(response.text.splitlines())
@@ -55,8 +55,12 @@ def download_logos():
 
         # Download the image
         try:
-            response = requests.get(thumbnail_url, stream=True)
+            response = requests.get(thumbnail_url, stream=True, timeout=30)
             response.raise_for_status()
+            content_type = response.headers.get('Content-Type', '')
+            if not content_type.startswith('image/'):
+                # e.g. an HTML sign-in page when the file isn't shared publicly
+                raise ValueError(f"expected an image but got '{content_type}'; is the file shared with 'anyone with the link'?")
             with open(filename, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
