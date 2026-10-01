@@ -13,6 +13,10 @@ def sanitize_filename(name):
     sanitized = sanitized.strip('-')
     return sanitized
 
+def is_published(school):
+    """Only schools with the 'Publish' column set to 'Yes' appear on the site."""
+    return (school.get('Publish') or '').strip().lower() == 'yes'
+
 def generate_llms_markdown(schools):
     md = """# Portland Independent Schools Directory
     
@@ -102,7 +106,9 @@ def build_site():
 
         # Parse CSV data with UTF-8 encoding
         csv_reader = csv.DictReader(response.content.decode('utf-8').splitlines())
-        schools = list(csv_reader)
+        all_schools = list(csv_reader)
+        schools = [s for s in all_schools if is_published(s)]
+        print(f"Publishing {len(schools)} of {len(all_schools)} schools (Publish = Yes)")
 
         # Get current date in sitemap format
         now = datetime.now(timezone.utc).astimezone()
