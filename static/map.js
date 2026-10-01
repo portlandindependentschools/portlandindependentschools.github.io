@@ -11,7 +11,10 @@ var cwmap = (() => {
     container: "map",
     style: "https://api.protomaps.com/styles/v5/light/en.json?key=dce60796ad799401",
     center: [-122.6765, 45.4831], // Default Portland coordinates
-    zoom: 9
+    zoom: 9,
+    // Don't allow zooming out further than roughly the state of Oregon
+    // (~zoom 5.5 in the 400px-tall map), so a stray scroll can't zoom to the globe.
+    minZoom: 5.5
   });
 
   // Add school markers after map loads
