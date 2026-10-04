@@ -35,7 +35,11 @@
   <link href="bootstrap.min.css" rel="stylesheet">
   <link href="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.css" rel="stylesheet">
   <style>
-    #map { height: 400px; margin: 2rem 0; }
+    /* #map is a direct child of a Bootstrap .row, which gives it horizontal
+       padding (.row > *). MapLibre computes pointer positions relative to the
+       padded content box but draws the canvas from the outer edge, so clicks
+       landed ~12px left of the pips. Keep the map unpadded. */
+    #map { height: 400px; margin: 2rem 0; padding: 0; }
     .leaflet-container { background: #f8f9fa; }
     .school-marker {
       width: 20px;
